@@ -65,10 +65,11 @@ public abstract class SshClientIT {
     @Test
     public void uploadAndListFile() throws IOException {
         authUserPasswordAndConnect();
-        String remotePath = "/home/vagrant/test.txt";
+        String remoteDirPath = "/home/vagrant";
+        String remoteFilePath = remoteDirPath + "/test.txt";
 
-        clientUnderTest.upload(FileSystems.getDefault().getPath("src/test/resources/test.txt"), remotePath);
-        assertThat(clientUnderTest.listChildrenFileNames(remotePath));
+        clientUnderTest.upload(FileSystems.getDefault().getPath("src/test/resources/test.txt"), remoteFilePath);
+        assertThat(clientUnderTest.listChildrenFileNames(remoteDirPath)).contains("test.txt");
     }
 
     @Test
