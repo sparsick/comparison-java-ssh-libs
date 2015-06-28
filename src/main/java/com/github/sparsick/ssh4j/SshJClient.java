@@ -115,35 +115,21 @@ public class SshJClient implements SshClient {
 
     @Override
     public List<String> listChildrenFolderNames(String remotePath) throws IOException {
-        RemoteResourceFilter remoteFolderResourceFilter = new RemoteResourceFilter() {
-
-            @Override
-            public boolean accept(RemoteResourceInfo resource) {
-                return resource.isDirectory();
-            }
-        };
-        return listChildrenNamesByFilter(remotePath, remoteFolderResourceFilter);
+        return listChildrenNamesByFilter(remotePath, RemoteResourceInfo::isDirectory);
     }
 
     @Override
     public List<String> listChildrenFileNames(String remotePath) throws IOException {
-        RemoteResourceFilter remoteFileResourceFilter = new RemoteResourceFilter() {
-
-            @Override
-            public boolean accept(RemoteResourceInfo resource) {
-                return resource.isRegularFile();
-            }
-        };
-        return listChildrenNamesByFilter(remotePath, remoteFileResourceFilter);
+        return listChildrenNamesByFilter(remotePath, RemoteResourceInfo::isRegularFile);
     }
 
     private List<String> listChildrenNamesByFilter(String remotePath, RemoteResourceFilter remoteFolderResourceFilter) throws IOException {
         try (SFTPClient sftpClient = sshClient.newSFTPClient()) {
             List<String> children = new ArrayList<>();
             List<RemoteResourceInfo> childrenInfos = sftpClient.ls(remotePath, remoteFolderResourceFilter);
-            for (RemoteResourceInfo childInfo : childrenInfos) {
+            childrenInfos.stream().forEach((childInfo) -> {
                 children.add(childInfo.getName());
-            }
+            });
             return children;
         }
     }
