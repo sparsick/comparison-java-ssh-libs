@@ -38,7 +38,6 @@ public class SshJClient implements SshClient {
 
     @Override
     public void connect(String host) throws IOException {
-        //TODO strictHostKeyVerification
         sshClient = new SSHClient();
         if (knownHosts == null) {
             sshClient.loadKnownHosts();

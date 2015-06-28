@@ -29,12 +29,14 @@ public abstract class SshClientIT {
     @Test
     public void authUserPasswordAndConnect() throws IOException {
         clientUnderTest.authUserPassword(SSH_USER, "vagrant");
+        clientUnderTest.setKnownHosts(FileSystems.getDefault().getPath("src/test/resources/known_hosts"));
         clientUnderTest.connect(SSH_HOST);
     }
 
     @Test
     public void authUserPublicKeyAndConnect() throws IOException {
         clientUnderTest.authUserPublicKey(SSH_USER, FileSystems.getDefault().getPath("src/test/resources/id_rsa"));
+        clientUnderTest.setKnownHosts(FileSystems.getDefault().getPath("src/test/resources/known_hosts"));
         clientUnderTest.connect(SSH_HOST);
     }
 
