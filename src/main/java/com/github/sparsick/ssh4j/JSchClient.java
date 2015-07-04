@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JschClient implements SshClient {
+public class JSchClient implements SshClient {
 
     private String password;
     private String user;
@@ -49,8 +49,10 @@ public class JschClient implements SshClient {
                 }
                 if (knownHosts != null) {
                     sshClient.setKnownHosts(knownHosts.toString());
-
+                } else {
+                    sshClient.setKnownHosts("~/.ssh/known_hosts");
                 }
+                
                 session = sshClient.getSession(user, host);
                 if (password != null) {
                     session.setPassword(password);
@@ -128,7 +130,7 @@ public class JschClient implements SshClient {
 
     @Override
     public void copy(String oldRemotePath, String newRemotePath) throws IOException {
-        executeCommand("mv " + oldRemotePath + " " + newRemotePath);
+        executeCommand("cp " + oldRemotePath + " " + newRemotePath);
     }
 
     private void executeCommand(String command) throws IOException {
@@ -137,6 +139,7 @@ public class JschClient implements SshClient {
             execChannel = (ChannelExec) session.openChannel("exec");
             execChannel.connect();
             execChannel.setCommand(command);
+            execChannel.start();
         } catch (JSchException ex) {
             throw new IOException(ex);
         } finally {

@@ -61,7 +61,7 @@ public class SshJClient implements SshClient {
         try {
             close();
         } catch (Exception ex) {
-            // Ignore because disconnect is quietly
+            // Ignore because disconnection is quietly
         }
     }
 

@@ -44,7 +44,7 @@ public class VfsSftpClient implements SshClient {
     public void connect(String host) throws IOException {
         initFileSystemManager();
         FileSystemOptions connectionOptions = buildConnectionOptions();
-        String connectionUrl = buildConnectioUrl(host);
+        String connectionUrl = buildConnectionUrl(host);
         remoteRootDirectory = fileSystemManager.resolveFile(connectionUrl, connectionOptions);
     }
 
@@ -62,6 +62,8 @@ public class VfsSftpClient implements SshClient {
         sftpConfigBuilder.setStrictHostKeyChecking(opts, "yes");
         if (knownHosts != null) {
             sftpConfigBuilder.setKnownHosts(opts, knownHosts.toFile());
+        } else {
+            sftpConfigBuilder.setKnownHosts(opts, new File("~/.ssh/known_hosts"));
         }
         if (privateKey != null) {
             sftpConfigBuilder.setIdentities(opts, new File[]{privateKey.toFile()});
@@ -69,7 +71,7 @@ public class VfsSftpClient implements SshClient {
         return opts;
     }
 
-    private String buildConnectioUrl(String host) {
+    private String buildConnectionUrl(String host) {
         if (privateKey != null) {
             return String.format("sftp://%s@%s", user, host);
         } else if (password != null) {
